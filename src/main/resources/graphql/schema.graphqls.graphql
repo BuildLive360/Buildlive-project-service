@@ -1,0 +1,24 @@
+type Project {
+    id: ID!
+    projectName: String!
+    address: String!
+    city: String!
+    startDate: String!
+    endDate: String!
+    projectValue: String!
+    status: ProjectStatus!
+    creator: String
+    company: String
+    createdTime: String!
+}
+
+enum ProjectStatus {
+
+    NOT_STARTED
+    ONGOING
+    COMPLETED
+}
+
+type Query {
+    findAllProjects:[Project]
+}

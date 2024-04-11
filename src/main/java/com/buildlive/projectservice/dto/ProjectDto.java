@@ -1,10 +1,7 @@
 package com.buildlive.projectservice.dto;
 
 import com.buildlive.projectservice.entity.ProjectStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -15,8 +12,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ProjectDto {
 
+    private UUID id;
     private String projectName;
     private String address;
+    private String city;
     private LocalDate start_date;
     private LocalDate end_date;
     private String project_value;
