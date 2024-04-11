@@ -1,19 +1,28 @@
-server:
-  port: 8060
-eureka:
-  client:
-    service-url:
-      defaultZone : http://localhost:8761/eureka/
+#server:
+#  port: 8060
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone : http://localhost:8761/eureka/
+#spring:
+#  application:
+#    name: PROJECT-SERVICE
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/buildlive_project
+#    username: root
+#    password: '@77SUDHA'
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQLDialect
+
+
 spring:
   application:
-    name: PROJECT-SERVICE
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/buildlive_project
-    username: root
-    password: '@77SUDHA'
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQLDialect
+    name: "project"
+  profiles:
+    active: "service"
+  config:
+    import: "optional:configserver:http://localhost:8888"
