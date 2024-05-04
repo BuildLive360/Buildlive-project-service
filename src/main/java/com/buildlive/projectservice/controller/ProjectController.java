@@ -29,6 +29,10 @@ public class ProjectController {
 //        return "This is a demo";
 //    }
 
+    @GetMapping("/test")
+    public String getTest(){
+        return "test done ";
+    }
     @PostMapping("/create")
     public ResponseEntity<ProjectResponse> createProject(@RequestBody ProjectDto projectDto) {
         ProjectResponse response = projectService.createProject(projectDto);
