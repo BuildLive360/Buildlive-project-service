@@ -1,6 +1,6 @@
 package com.buildlive.projectservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +19,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Project {
 
     @Id
@@ -38,7 +39,25 @@ public class Project {
     private UUID company;
     private LocalDateTime createdTime;
 
-    @JsonManagedReference
+
+
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnoreProperties("project")
     List<ProjectTeam> projectTeam = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnoreProperties("project")
+    List<ProjectMaterial> projectMaterials = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnoreProperties("project")
+    List<ProjectTasks> projectTasks = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
+//    @JsonIgnoreProperties("project")
+//    List<ProjectAttendanceEntry> attendanceEntries = new ArrayList<>();
+
+
 }

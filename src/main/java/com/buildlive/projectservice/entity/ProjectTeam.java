@@ -1,20 +1,21 @@
 package com.buildlive.projectservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ProjectTeam {
 
     @Id
@@ -28,9 +29,17 @@ public class ProjectTeam {
     @Enumerated(EnumType.STRING)
     private ProjectRole projectRole;
 
-    @ManyToOne
-    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project")
+    @JsonIgnore
     private Project project;
+
+    @OneToMany(mappedBy = "projectTeam",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnoreProperties("projectTeam")
+    List<ProjectTasks> projectTasks = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "projectTeam",cascade = CascadeType.ALL)
+//    @JsonIgnoreProperties("projectTeam")
+//    List<ProjectAttendanceEntry> attendanceEntryList = new ArrayList<>();
 
 }

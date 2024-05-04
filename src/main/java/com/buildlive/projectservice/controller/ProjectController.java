@@ -3,6 +3,7 @@ package com.buildlive.projectservice.controller;
 import com.buildlive.projectservice.dto.*;
 import com.buildlive.projectservice.entity.Project;
 import com.buildlive.projectservice.service.ProjectService;
+import com.buildlive.projectservice.service.impl.ProjectServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RequestMapping("/api/v1/project")
@@ -18,6 +20,9 @@ public class ProjectController {
 
     @Autowired
     ProjectService projectService;
+
+    @Autowired
+    ProjectServiceImpl projectServiceImpl;
 
 //    @GetMapping
 //    public String demoApi(){
@@ -36,14 +41,28 @@ public class ProjectController {
 //
 //    }
 
-    @GetMapping("/{companyId}/company")
-    public ResponseEntity<List<Project>> getAllProjectsOfACompany(@PathVariable UUID companyId){
-        return ResponseEntity.ok(projectService.getAllByCompany(companyId));
+    @GetMapping("/{companyId}/company/{userEmail}/{userId}")
+    public ResponseEntity<List<Project>> getAllProjectsOfACompany(
+            @PathVariable(name = "companyId") UUID companyId,
+            @PathVariable(name = "userEmail") String userEmail,
+            @PathVariable(name = "userId") UUID userId){
+        List<Project> userProjects = projectService.getAllProjectsOfACompanyForUser(companyId, userEmail, userId);
+        return ResponseEntity.ok(userProjects);
     }
+
+    @GetMapping("/countByMonth/{userId}/{userEmail}")
+    public Map<String, Long> getProjectCountByMonth(
+            @PathVariable(name = "userId") UUID userId,
+            @PathVariable(name = "userEmail") String userEmail) {
+        System.out.println(userEmail+"kkkk");
+        return projectServiceImpl.getProjectCountByMonth(userId, userEmail);
+    }
+
 
     @PostMapping("/addToProject")
     public ResponseEntity<?> addMemberToProject(@RequestBody ProjectTeamDto request){
         try {
+            System.out.println(request);
             projectService.addEmployeeToProjectTeam(request);
             return ResponseEntity.ok().build();
         }

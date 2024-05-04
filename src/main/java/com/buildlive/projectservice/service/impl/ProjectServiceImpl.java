@@ -4,10 +4,8 @@ import com.buildlive.projectservice.dto.ProjectDto;
 import com.buildlive.projectservice.dto.ProjectResponse;
 import com.buildlive.projectservice.dto.ProjectTeamDto;
 import com.buildlive.projectservice.dto.TeamRetrieval;
-import com.buildlive.projectservice.entity.Project;
-import com.buildlive.projectservice.entity.ProjectRole;
-import com.buildlive.projectservice.entity.ProjectStatus;
-import com.buildlive.projectservice.entity.ProjectTeam;
+import com.buildlive.projectservice.entity.*;
+import com.buildlive.projectservice.repo.ProjectMaterialRepository;
 import com.buildlive.projectservice.repo.ProjectRepository;
 import com.buildlive.projectservice.repo.ProjectTeamRepository;
 import com.buildlive.projectservice.service.ProjectService;
@@ -18,10 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +32,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-
+    @Autowired
+    ProjectMaterialRepository projectMaterialRepository;
     @Autowired
     ProjectRepository projectRepository;
 
@@ -71,9 +68,55 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getAllByCompany(UUID companyId) {
-        return projectRepository.findByCompany(companyId);
+    public List<Project> getAllProjectsOfACompanyForUser(UUID companyId, String userEmail, UUID userId) {
+        List<Project> projects = projectRepository.findByCompany(companyId);
+        List<Project> userProjects = new ArrayList<>();
+
+        for (Project project : projects) {
+            if (project.getCreator().equals(userId)) {
+                userProjects.add(project);
+            } else {
+                for (ProjectTeam teamMember : project.getProjectTeam()) {
+                    if (teamMember.getParty_email().equals(userEmail)) {
+                        userProjects.add(project);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return userProjects;
     }
+
+    public Map<String, Long> getProjectCountByMonth(UUID userId, String userEmail) {
+        Map<String, Long> projectCountByMonth = new HashMap<>();
+
+        List<Project> projects = projectRepository.findAll();
+        for (Project project : projects) {
+            if (project.getCreator().equals(userId) || isUserTeamMember(project, userEmail)) {
+                String monthYear = getMonthYearString(project.getStart_date());
+                projectCountByMonth.put(monthYear, projectCountByMonth.getOrDefault(monthYear, 0L) + 1);
+            }
+        }
+
+        return projectCountByMonth;
+    }
+
+    private boolean isUserTeamMember(Project project, String userEmail) {
+        for (ProjectTeam teamMember : project.getProjectTeam()) {
+            if (teamMember.getParty_email().equals(userEmail)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String getMonthYearString(LocalDate date) {
+        int year = date.getYear();
+        int month = date.getMonthValue();
+        return String.format("%d-%02d", year, month);
+    }
+
 
     @Override
     public void addEmployeeToProjectTeam(ProjectTeamDto request) {
@@ -137,8 +180,14 @@ public class ProjectServiceImpl implements ProjectService {
             projectRepository.save(project);
         }
 
+    @Override
+    public List<ProjectMaterial> getAllProjectMaterials(UUID projectId) {
 
+        Project project = projectRepository.findById(projectId).orElseThrow(() ->
+                new IllegalArgumentException("Project not found with ID: " + projectId));
 
+        return project.getProjectMaterials();
+    }
 
 
     private boolean isEmployeeAlreadyExists(Project project, ProjectTeam employee){
