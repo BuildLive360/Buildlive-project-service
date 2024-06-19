@@ -10,7 +10,8 @@ import java.util.UUID;
 
 @Entity
 @Table
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,14 +24,12 @@ public class ProjectTasks {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "Member")
-    @JsonIgnore
     private ProjectTeam projectTeam;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "project")
-    @JsonIgnore
     private Project project;
 
     @Enumerated(EnumType.STRING)

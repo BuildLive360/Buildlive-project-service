@@ -6,6 +6,7 @@ import com.buildlive.projectservice.dto.ProjectTeamDto;
 import com.buildlive.projectservice.dto.TeamRetrieval;
 import com.buildlive.projectservice.entity.Project;
 import com.buildlive.projectservice.entity.ProjectMaterial;
+import com.buildlive.projectservice.entity.ProjectTasks;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +28,8 @@ public interface ProjectService {
     void removeMemberFromProject(UUID projectId,UUID memberId);
 
     List<ProjectMaterial> getAllProjectMaterials(UUID projectId);
+
+
 
 
 }

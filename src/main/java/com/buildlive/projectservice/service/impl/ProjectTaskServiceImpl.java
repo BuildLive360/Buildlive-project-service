@@ -1,10 +1,8 @@
 package com.buildlive.projectservice.service.impl;
 
 import com.buildlive.projectservice.dto.ProjectTaskDto;
-import com.buildlive.projectservice.entity.Project;
-import com.buildlive.projectservice.entity.ProjectTasks;
-import com.buildlive.projectservice.entity.ProjectTeam;
-import com.buildlive.projectservice.entity.TaskStatus;
+import com.buildlive.projectservice.dto.task.TaskUpdationRequest;
+import com.buildlive.projectservice.entity.*;
 import com.buildlive.projectservice.repo.IProjectTaskRepository;
 import com.buildlive.projectservice.repo.ProjectRepository;
 import com.buildlive.projectservice.repo.ProjectTeamRepository;
@@ -14,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -42,7 +41,7 @@ public class ProjectTaskServiceImpl implements IProjectTaskService {
                 .projectTeam(projectTeam)
                 .startDate(taskDto.getStartDate())
                 .endDate(taskDto.getEndDate())
-                .taskStatus(TaskStatus.NOT_STARTED)
+                .taskStatus(TaskStatus.COMPLETED)
                 .project(project).build();
 
         project.getProjectTasks().add(projectTasks);
@@ -52,6 +51,43 @@ public class ProjectTaskServiceImpl implements IProjectTaskService {
 
     @Override
     public List<ProjectTasks> getAllProjectTasks(UUID projectId, String partyEmail) {
-        return projectTaskRepository.findByProjectIdAndProjectTeamPartyEmail(projectId,partyEmail);
+        Optional<ProjectTeam> projectTeam = projectTeamRepository.findByPartyEmail(partyEmail);
+
+        if (projectTeam.isPresent()){
+            ProjectTeam member = projectTeam.get();
+
+            if   (  member.getProjectRole().equals(ProjectRole.MANAGER)
+                    || member.getProjectRole().equals(ProjectRole.ADMIN)){
+
+                return projectTaskRepository.findByProjectId(projectId);
+            }
+            else {
+                return projectTaskRepository.findByProjectIdAndProjectTeamPartyEmail(projectId,partyEmail);
+            }
+        }
+        else {
+            throw new RuntimeException("Unwanted member");
+        }
+    }
+
+    @Override
+    public ProjectTasks getTaskDetails(UUID id) {
+
+        Optional<ProjectTasks> optionalProjectTask = projectTaskRepository.findById(id);
+        if (optionalProjectTask.isPresent()){
+            return optionalProjectTask.get();
+        }
+        else {
+            throw new EntityNotFoundException("Task Not found");
+        }
+    }
+
+    @Override
+    public void updateTask(TaskUpdationRequest taskUpdationRequest,UUID taskId) {
+
+       ProjectTasks task =  projectTaskRepository.findById(taskId)
+                        .orElseThrow(()->new EntityNotFoundException("Task Not found"));
+                                task.setTaskStatus(TaskStatus.valueOf(taskUpdationRequest.getTaskStatus()));
+               projectTaskRepository.save(task);
     }
 }

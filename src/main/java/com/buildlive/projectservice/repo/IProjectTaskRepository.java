@@ -14,5 +14,8 @@ public interface IProjectTaskRepository extends JpaRepository<ProjectTasks, UUID
 
     @Query("SELECT pt FROM ProjectTasks pt JOIN pt.projectTeam ptm WHERE pt.project.id = :projectId AND ptm.party_email = :partyEmail")
     List<ProjectTasks> findByProjectIdAndProjectTeamPartyEmail(@Param("projectId") UUID projectId, @Param("partyEmail") String partyEmail);
+
+
+    List<ProjectTasks>findByProjectId(UUID projectId);
 }
 

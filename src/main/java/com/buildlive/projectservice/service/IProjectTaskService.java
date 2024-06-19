@@ -1,6 +1,7 @@
 package com.buildlive.projectservice.service;
 
 import com.buildlive.projectservice.dto.ProjectTaskDto;
+import com.buildlive.projectservice.dto.task.TaskUpdationRequest;
 import com.buildlive.projectservice.entity.ProjectTasks;
 
 import java.util.List;
@@ -12,4 +13,8 @@ public interface IProjectTaskService {
 
 
     List<ProjectTasks> getAllProjectTasks(UUID projectId, String partyEmail);
+
+    ProjectTasks getTaskDetails(UUID id);
+
+    void updateTask(TaskUpdationRequest taskUpdationRequest,UUID taskId);
 }
