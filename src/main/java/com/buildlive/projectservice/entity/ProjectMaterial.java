@@ -46,6 +46,7 @@ public class ProjectMaterial {
     @JsonIgnore
     private Project project;
 
+    @Builder.Default
     @OneToMany(mappedBy = "projectMaterial", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectMaterialEntryList> transactions = new ArrayList<>();
 }

@@ -36,6 +36,7 @@ public class ProjectTeam {
 
     @OneToMany(mappedBy = "projectTeam",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnoreProperties("projectTeam")
+    @Builder.Default
     List<ProjectTasks> projectTasks = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "projectTeam",cascade = CascadeType.ALL)

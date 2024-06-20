@@ -43,16 +43,19 @@ public class Project {
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnoreProperties("project")
+            @Builder.Default
     List<ProjectTeam> projectTeam = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnoreProperties("project")
+            @Builder.Default
     List<ProjectMaterial> projectMaterials = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnoreProperties("project")
+            @Builder.Default
     List<ProjectTasks> projectTasks = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL,orphanRemoval = true)

@@ -26,6 +26,7 @@ public class ProjectAttendance {
 
     @OneToMany(mappedBy = "attendance", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Builder.Default
     private Set<AttendanceWorkforce> workforceAllocations = new HashSet<>();
     private Long totalSalary;
 
