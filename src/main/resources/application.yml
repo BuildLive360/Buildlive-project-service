@@ -20,10 +20,33 @@
 
 
 
+#spring:
+#  application:
+#    name: "project"
+#  profiles:
+#    active: "service"
+#  config:
+#    import: "optional:configserver:http://3.132.56.186:8888"
+
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_ADDRESS:http://3.132.56.186:8761/eureka}
+server:
+  port: 8060
 spring:
   application:
-    name: "project"
-  profiles:
-    active: "service"
-  config:
-    import: "optional:configserver:http://3.132.56.186:8888"
+    name: PROJECT-SERVICE
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://avnadmin:AVNS_ESgA4tn3IPpnJH_9ilc@mysql-2d3775d9-aravindmunna240-b11d.d.aivencloud.com:11681/buildlive_project?ssl-mode=REQUIRED
+    username: avnadmin
+    password: 'AVNS_ESgA4tn3IPpnJH_9ilc'
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
